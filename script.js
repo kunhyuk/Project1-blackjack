@@ -320,8 +320,8 @@ stayBtn.disabled = true;
 dealingBtn.disabled = true;
 
 //dealer and player's hand
-let dealer = {hand:[], isFaceDown: true, sumNum: 0}
-let player = {hand:[], sumNum:0, bet:25, credit:1000, numberofCards: 0}
+let dealer = {hand:[], isFaceDown: true}
+let player = {hand:[], bet:25, credit:1000, numberofCards: 0}
 //let isStarted = false;
 
 //deck is what we use in one game
@@ -421,6 +421,12 @@ function sumDealerHand() {
     return sum
 }
 
+function untilOverSixteen() {
+   while (sumDealerHand() < 17) {
+    dealer.hand.push(deck.pop())
+   }
+}
+
 function displayBetAndCredit() {
     document.getElementById("currentCredit").innerHTML = `Current Credit ${player.credit}`
     document.getElementById("currentBet").innerHTML = `Current Bet ${player.bet}`
@@ -487,6 +493,9 @@ hitBtn.addEventListener('click', () => {
 stayBtn.addEventListener('click', () => {
     removeAllPreviousCards(dealerSide)
     dealer.isFaceDown = false;
+    if (sumDealerHand() < 16) {
+        untilOverSixteen()
+    }
     dealerCard(dealer.hand)
 
     if (sumDealerHand() === sumPlayerHand()) {
@@ -538,3 +547,4 @@ dealingBtn.addEventListener('click', () => {
     displayBetAndCredit()
 
 })
+
