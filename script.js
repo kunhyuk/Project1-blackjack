@@ -316,4 +316,147 @@ let dealingBtn = document.querySelector('#dealing')
 let hitBtn= document.querySelector('#hit')
 let stayBtn= document.querySelector('#stay')
 
-//
+//dealer and player's hand
+let dealer = {hand:[], isFaceDown: true}
+let player = {hand:[], sumNum:0, bet:25, credit:1000, numberofCards: 0}
+let isStarted = false;
+
+//deck is what we use in one game
+let deck = [...cardsArr]
+
+//cards on talbe as image
+function dealerCard(arr) {    
+    if (dealer.isFaceDown) {
+    let backImg = document.createElement('img')
+    backImg.setAttribute('src', 'images/back.jpg')
+    backImg.style.width = `200px`
+    backImg.style.height = `200px`
+    dealerSide.appendChild(backImg)
+    for (let i = 1; i < arr.length; i++) {
+    let images = document.createElement('img')
+    images.setAttribute('src', arr[i].img)
+    images.setAttribute('data-id', i)
+    images.style.width = `200px`
+    images.style.height = `200px`
+    dealerSide.appendChild(images)
+}
+} else {
+
+for (let i = 0; i < arr.length; i++) {
+    let images = document.createElement('img')
+    images.setAttribute('src', arr[i].img)
+    images.setAttribute('data-id', i)
+    images.style.width = `200px`
+    images.style.height = `200px`
+    dealerSide.appendChild(images)
+} 
+}
+    // let images = document.createElement('img')
+    // images.setAttribute('src', arr[i].img)
+    // images.setAttribute('data-id', i)
+    // images.style.width = `200px`
+    // images.style.height = `200px`
+    // dealerSide.appendChild(images)
+}
+function playerCard(arr) {
+    //playerSide.removeChild()
+    for (let i = 0; i < arr.length; i++) {
+        let images = document.createElement('img')
+        images.setAttribute('src', arr[i].img)
+        images.setAttribute('data-id', i)
+        images.style.width = `200px`
+        images.style.height = `200px`
+        playerSide.appendChild(images)
+    } 
+}
+
+//shuffle function shuffle the array on top of this js file
+function shuffle() {
+    for (let i = cardsArr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cardsArr[i], cardsArr[j]] = [cardsArr[j], cardsArr[i]];
+    }
+    deck = [...cardsArr]  
+}
+
+//when event happen delete previouse images on screen
+function removeAllPreviousCards(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild)
+    }
+}
+
+//empty hand of dealer and player
+function emptyHands() {
+    dealer.length = 0
+    player.hand.length = 0
+}
+
+//Question
+function sumCard(arr) {
+    let sum = 0;
+    for (let i = 0; i < arr; i++) {
+        sum+= arr[i].value;
+    }
+    return sum;
+}
+
+
+function sumPlayerHand() {
+    let sum = 0;
+    for (let i = 0; i < player.hand.length; i++) {
+        sum+= player.hand[i].value;
+    }
+    return sum
+}
+
+function displayBetAndCredit() {
+    document.getElementById("currentCredit").innerHTML = `Current Credit ${player.credit}`
+    document.getElementById("currentBet").innerHTML = `Current Bet ${player.bet}`
+}
+
+//Buttons
+startBtn.addEventListener('click', ()=> {
+    alert('Game started')
+    removeAllPreviousCards(dealerSide)
+    removeAllPreviousCards(playerSide)
+    emptyHands()
+    shuffle()
+    dealer = {hand:[], isFaceDown: true}
+    player = {hand:[], bet:25, credit:1000, numberofCards: 2}
+    dealer.hand.push(deck.pop())
+    dealer.hand.push(deck.pop())
+    player.hand.push(deck.pop())
+    player.hand.push(deck.pop())
+
+    playerCard(player.hand)
+    dealerCard(dealer.hand)
+    displayBetAndCredit()
+    isStarted = true;
+})
+
+hitBtn.addEventListener('click', () => {
+    if (!isStarted) {
+        alert('Press start game')
+        return;
+    }
+    removeAllPreviousCards(playerSide)
+    player.hand.push(deck.pop())
+    playerCard(player.hand)
+    player.numberofCards++;
+    player.sumNum = sumPlayerHand()
+    console.log(player.sumNum)
+
+    if (sum === 21) {
+        alert('Blackjack')
+        //player.credit = player.credit + player.bet
+    } else if (sum > 21) {
+        alert('bust')
+        //isFaceDown = false;
+        //dealerTurn()
+        //dealers turn here
+        //player.credit = player.credit - player.bet
+    } else {
+        alert('hit')
+    }
+})
