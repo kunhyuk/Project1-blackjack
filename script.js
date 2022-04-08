@@ -476,6 +476,7 @@ hitBtn.addEventListener('click', () => {
     if (sumPlayerHand() > 21) {
         alert('bust')
         dealer.isFaceDown = false;
+        removeAllPreviousCards(dealerSide)
         dealerCard(dealer.hand)
         player.credit = player.credit - player.bet
         hitBtn.disabled = true;
@@ -496,9 +497,13 @@ stayBtn.addEventListener('click', () => {
     if (sumDealerHand() < 16) {
         untilOverSixteen()
     }
+
     dealerCard(dealer.hand)
 
-    if (sumDealerHand() === sumPlayerHand()) {
+    if (sumDealerHand() > 21) {
+        alert('dealer bust')
+        player.credit = player.credit + player.bet
+    }else if (sumDealerHand() === sumPlayerHand()) {
         alert('draw')
         
     } else if (sumPlayerHand() > sumDealerHand()) {
@@ -542,6 +547,7 @@ dealingBtn.addEventListener('click', () => {
         player.credit = player.credit + player.bet
         hitBtn.disabled = true;
         stayBtn.disabled = true;
+        dealingBtn.disabled = false;
     }
 
     displayBetAndCredit()
