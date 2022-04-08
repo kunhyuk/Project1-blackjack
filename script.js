@@ -312,14 +312,17 @@ let startBtn = document.querySelector('#start')
 
 //dealing button: After each round click it to get cards
 let dealingBtn = document.querySelector('#dealing')
-
 let hitBtn= document.querySelector('#hit')
 let stayBtn= document.querySelector('#stay')
+//disable buttons
+hitBtn.disabled = true;
+stayBtn.disabled = true;
+dealingBtn.disabled = true;
 
 //dealer and player's hand
-let dealer = {hand:[], isFaceDown: true}
+let dealer = {hand:[], isFaceDown: true, sumNum: 0}
 let player = {hand:[], sumNum:0, bet:25, credit:1000, numberofCards: 0}
-let isStarted = false;
+//let isStarted = false;
 
 //deck is what we use in one game
 let deck = [...cardsArr]
@@ -388,7 +391,7 @@ function removeAllPreviousCards(parent) {
 
 //empty hand of dealer and player
 function emptyHands() {
-    dealer.length = 0
+    dealer.hand.length = 0
     player.hand.length = 0
 }
 
@@ -406,6 +409,14 @@ function sumPlayerHand() {
     let sum = 0;
     for (let i = 0; i < player.hand.length; i++) {
         sum+= player.hand[i].value;
+    }
+    return sum
+}
+
+function sumDealerHand() {
+    let sum = 0;
+    for (let i = 0; i < dealer.hand.length; i++) {
+        sum+= dealer.hand[i].value;
     }
     return sum
 }
@@ -428,35 +439,102 @@ startBtn.addEventListener('click', ()=> {
     dealer.hand.push(deck.pop())
     player.hand.push(deck.pop())
     player.hand.push(deck.pop())
-
+    dealer.isFaceDown = true;
     playerCard(player.hand)
     dealerCard(dealer.hand)
+
+    hitBtn.disabled = false;
+    stayBtn.disabled = false;
+    //dealingBtn.disabled = false;
+    
+    if (sumPlayerHand() === 21) {
+        alert('Blackjack')
+        player.credit = player.credit + player.bet
+        hitBtn.disabled = true;
+        stayBtn.disabled = true;
+        dealingBtn.disabled = false;
+    }
+
     displayBetAndCredit()
-    isStarted = true;
 })
 
 hitBtn.addEventListener('click', () => {
-    if (!isStarted) {
-        alert('Press start game')
-        return;
-    }
+    //disalbe double button
     removeAllPreviousCards(playerSide)
     player.hand.push(deck.pop())
     playerCard(player.hand)
     player.numberofCards++;
-    player.sumNum = sumPlayerHand()
-    console.log(player.sumNum)
+    
+    console.log(sumPlayerHand())
 
-    if (sum === 21) {
-        alert('Blackjack')
-        //player.credit = player.credit + player.bet
-    } else if (sum > 21) {
+    if (sumPlayerHand() > 21) {
         alert('bust')
-        //isFaceDown = false;
-        //dealerTurn()
-        //dealers turn here
-        //player.credit = player.credit - player.bet
+        dealer.isFaceDown = false;
+        dealerCard(dealer.hand)
+        player.credit = player.credit - player.bet
+        hitBtn.disabled = true;
+        stayBtn.disabled = true;
+        dealingBtn.disabled = false;
     } else {
         alert('hit')
+        dealingBtn.disabled = true;
+        hitBtn.disabled = false;
+        stayBtn.disabled = false;
     }
+    displayBetAndCredit()
+})
+
+stayBtn.addEventListener('click', () => {
+    removeAllPreviousCards(dealerSide)
+    dealer.isFaceDown = false;
+    dealerCard(dealer.hand)
+
+    if (sumDealerHand() === sumPlayerHand()) {
+        alert('draw')
+        
+    } else if (sumPlayerHand() > sumDealerHand()) {
+        alert('Table win')
+        player.credit = player.credit + player.bet
+        
+    } else {
+        alert('Dealer win')
+        player.credit = player.credit - player.bet
+    }
+    hitBtn.disabled = true;
+    stayBtn.disabled = true;
+    dealingBtn.disabled = false;
+
+    displayBetAndCredit()
+})
+
+dealingBtn.addEventListener('click', () => {
+    dealer.isFaceDown = true;
+    removeAllPreviousCards(dealerSide)
+    removeAllPreviousCards(playerSide)
+    emptyHands()
+    // shuffle()
+    // dealer = {hand:[], isFaceDown: true}
+    // player = {hand:[], bet:25, credit:1000, numberofCards: 2}
+    dealer.hand.push(deck.pop())
+    dealer.hand.push(deck.pop())
+    player.hand.push(deck.pop())
+    player.hand.push(deck.pop())
+    player.numberofCards = 2;
+    dealer.isFaceDown = true;
+    playerCard(player.hand)
+    dealerCard(dealer.hand)
+
+    hitBtn.disabled = false;
+    stayBtn.disabled = false;
+    dealingBtn.disabled = true;
+    
+    if (sumPlayerHand() === 21) {
+        alert('Blackjack')
+        player.credit = player.credit + player.bet
+        hitBtn.disabled = true;
+        stayBtn.disabled = true;
+    }
+
+    displayBetAndCredit()
+
 })
