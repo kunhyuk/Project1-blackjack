@@ -314,10 +314,14 @@ let startBtn = document.querySelector('#start')
 let dealingBtn = document.querySelector('#dealing')
 let hitBtn= document.querySelector('#hit')
 let stayBtn= document.querySelector('#stay')
+let doubleBtn = document.querySelector('#double')
+let splitBtn = document.querySelector('#split')
 //disable buttons
 hitBtn.disabled = true;
 stayBtn.disabled = true;
 dealingBtn.disabled = true;
+doubleBtn.disabled = true;
+splitBtn.disabled = true;
 //inputs
 let creditInput = document.querySelector('#creditInput')
 let betInput = document.querySelector('#betInput')
@@ -462,8 +466,11 @@ startBtn.addEventListener('click', ()=> {
 
     hitBtn.disabled = false;
     stayBtn.disabled = false;
+    doubleBtn.disabled = false;
     //dealingBtn.disabled = false;
-    
+    if (player.hand[0].value === player.hand[1].value) {
+        splitBtn.disabled = false;
+    }
     if (sumPlayerHand() === 21) {
         alert('Blackjack')
         dealer.isFaceDown = false;
@@ -473,8 +480,10 @@ startBtn.addEventListener('click', ()=> {
         hitBtn.disabled = true;
         stayBtn.disabled = true;
         dealingBtn.disabled = false;
+        splitBtn.disabled = true;
+        doubleBtn.disabled = true;
     }
-
+    
     displayBetAndCredit()
 })
 
