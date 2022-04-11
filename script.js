@@ -303,8 +303,8 @@ const playerSide = document.querySelector('.player')
 const dealerSide = document.querySelector('.dealer')
 
 //bet and credit
-const bets = document.querySelector('currentBet')
-const credits = document.querySelector('currentCredit')
+const bets = document.querySelector('#currentBet')
+const credits = document.querySelector('#currentCredit')
 
 //Start button is needed to be click to start game
 //It reset credit and bets and everything to default
@@ -332,15 +332,17 @@ function dealerCard(arr) {
     if (dealer.isFaceDown) {
     let backImg = document.createElement('img')
     backImg.setAttribute('src', 'images/back.jpg')
-    backImg.style.width = `200px`
-    backImg.style.height = `200px`
+    backImg.style.width = `20%`
+    backImg.style.height = `auto`
+    backImg.setAttribute('class', "img-fluid")
     dealerSide.appendChild(backImg)
     for (let i = 1; i < arr.length; i++) {
     let images = document.createElement('img')
     images.setAttribute('src', arr[i].img)
     images.setAttribute('data-id', i)
-    images.style.width = `200px`
-    images.style.height = `200px`
+    images.style.width = `20%`
+    images.style.height = `auto`
+    images.setAttribute('class', "img-fluid")
     dealerSide.appendChild(images)
 }
 } else {
@@ -349,8 +351,9 @@ for (let i = 0; i < arr.length; i++) {
     let images = document.createElement('img')
     images.setAttribute('src', arr[i].img)
     images.setAttribute('data-id', i)
-    images.style.width = `200px`
-    images.style.height = `200px`
+    images.style.width = `20%`
+    images.style.height = `auto`
+    images.setAttribute('class', "img-fluid")
     dealerSide.appendChild(images)
 } 
 }
@@ -367,8 +370,11 @@ function playerCard(arr) {
         let images = document.createElement('img')
         images.setAttribute('src', arr[i].img)
         images.setAttribute('data-id', i)
-        images.style.width = `200px`
-        images.style.height = `200px`
+        images.style.width = `20%`
+        images.style.height = `auto`
+        // images.setAttribute('class', "img-fluid")
+        // images.style.verticalAlign = 'bottom'
+        images.style.border = 0;
         playerSide.appendChild(images)
     } 
 }
@@ -425,11 +431,14 @@ function untilOverSixteen() {
    while (sumDealerHand() < 17) {
     dealer.hand.push(deck.pop())
    }
+//    if (sumDealerHand() > 21) {
+//        alert('dealerbust')
+//    }
 }
 
 function displayBetAndCredit() {
-    document.getElementById("currentCredit").innerHTML = `Current Credit ${player.credit}`
-    document.getElementById("currentBet").innerHTML = `Current Bet ${player.bet}`
+    document.getElementById("currentCredit").innerHTML = `Current Credit: ${player.credit}`
+    document.getElementById("currentBet").innerHTML = `Current Bet: ${player.bet}`
 }
 
 //Buttons
@@ -455,6 +464,9 @@ startBtn.addEventListener('click', ()=> {
     
     if (sumPlayerHand() === 21) {
         alert('Blackjack')
+        dealer.isFaceDown = false;
+        removeAllPreviousCards(dealerSide)
+        dealerCard(dealer.hand)
         player.credit = player.credit + player.bet
         hitBtn.disabled = true;
         stayBtn.disabled = true;
@@ -471,7 +483,7 @@ hitBtn.addEventListener('click', () => {
     playerCard(player.hand)
     player.numberofCards++;
     
-    console.log(sumPlayerHand())
+    
 
     if (sumPlayerHand() > 21) {
         alert('bust')

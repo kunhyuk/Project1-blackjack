@@ -1,26 +1,16 @@
 .table {
     background-color: rgb(124, 210, 124);
     width:100%;
-    height: 800px 
+    height:100%; 
 }
+
 
 .player {
-    position: absolute;
-    bottom: 50px;
-    
+    align-self: flex-end;
 }
 
-#dealerTag {
-    position: absolute;
-    
-    
-}
 
-#playerTag {
-    position: absolute;
-    bottom: 50px;
-    
-}
+
 
 /* Question
 what should I work on next
