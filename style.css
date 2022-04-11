@@ -4,9 +4,13 @@
     height:100%; 
 }
 
-
+.dealer {
+    align-self: flex-start;
+    margin: 10px;
+}
 .player {
     align-self: flex-end;
+    margin: 10px;
 }
 
 

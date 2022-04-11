@@ -442,6 +442,11 @@ function untilOverSixteen() {
 //    }
 }
 
+// A function that makes user to type bet before start the game
+// function betFirst() {
+//    alert('bet first')
+// }
+
 function displayBetAndCredit() {
     document.getElementById("currentCredit").innerHTML = `Current Credit: ${player.credit}`
     //document.getElementById("currentBet").innerHTML = `Current Bet: ${player.bet}`
@@ -504,12 +509,14 @@ hitBtn.addEventListener('click', () => {
         player.credit = player.credit - parseInt(betInput.value)
         hitBtn.disabled = true;
         stayBtn.disabled = true;
+        doubleBtn.disabled = true;
         dealingBtn.disabled = false;
     } else {
         alert('hit')
         dealingBtn.disabled = true;
         hitBtn.disabled = false;
         stayBtn.disabled = false;
+        doubleBtn.disabled = true;
     }
     displayBetAndCredit()
 })
@@ -540,6 +547,8 @@ stayBtn.addEventListener('click', () => {
     hitBtn.disabled = true;
     stayBtn.disabled = true;
     dealingBtn.disabled = false;
+    doubleBtn.disabled = true;
+    splitBtn.disabled = true;
 
     displayBetAndCredit()
 })
@@ -563,6 +572,7 @@ dealingBtn.addEventListener('click', () => {
 
     hitBtn.disabled = false;
     stayBtn.disabled = false;
+    doubleBtn.disabled = false;
     dealingBtn.disabled = true;
     
     if (sumPlayerHand() === 21) {
@@ -577,3 +587,44 @@ dealingBtn.addEventListener('click', () => {
 
 })
 
+doubleBtn.addEventListener('click', () => {
+    removeAllPreviousCards(playerSide)
+    player.hand.push(deck.pop())
+    playerCard(player.hand)
+    player.numberofCards++;
+
+
+    removeAllPreviousCards(dealerSide)
+    dealer.isFaceDown = false;
+    if (sumDealerHand() < 16) {
+        untilOverSixteen()
+    }
+    dealerCard(dealer.hand)
+
+    if (sumPlayerHand() > 21) {
+        alert('bust')
+        player.credit = player.credit - (2 * parseInt(betInput.value))
+    } else if (sumDealerHand() > 21) {
+        alert('dealer bust')
+        player.credit = player.credit + (2 * parseInt(betInput.value))
+    } else if (sumPlayerHand() > sumDealerHand()) {
+        alert('table win')
+        player.credit = player.credit + (2 * parseInt(betInput.value))
+    } else if (sumDealerHand() > sumPlayerHand()) {
+        alert('dealer win')
+        player.credit = player.credit - (2 * parseInt(betInput.value))
+    }
+    hitBtn.disabled = true;
+    stayBtn.disabled = true;
+    dealingBtn.disabled = false;
+    doubleBtn.disabled = true;
+    splitBtn.disabled = true;
+    displayBetAndCredit()
+
+})
+
+//split is harder that I thought :D
+splitBtn.addEventListener('click', () => {
+    removeAllPreviousCards(playerSide)
+
+})
