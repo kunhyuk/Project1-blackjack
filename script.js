@@ -318,10 +318,12 @@ let stayBtn= document.querySelector('#stay')
 hitBtn.disabled = true;
 stayBtn.disabled = true;
 dealingBtn.disabled = true;
-
+//inputs
+let creditInput = document.querySelector('#creditInput')
+let betInput = document.querySelector('#betInput')
 //dealer and player's hand
 let dealer = {hand:[], isFaceDown: true}
-let player = {hand:[], bet:25, credit:1000, numberofCards: 0}
+let player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 0}
 //let isStarted = false;
 
 //deck is what we use in one game
@@ -438,7 +440,7 @@ function untilOverSixteen() {
 
 function displayBetAndCredit() {
     document.getElementById("currentCredit").innerHTML = `Current Credit: ${player.credit}`
-    document.getElementById("currentBet").innerHTML = `Current Bet: ${player.bet}`
+    //document.getElementById("currentBet").innerHTML = `Current Bet: ${player.bet}`
 }
 
 //Buttons
@@ -449,7 +451,7 @@ startBtn.addEventListener('click', ()=> {
     emptyHands()
     shuffle()
     dealer = {hand:[], isFaceDown: true}
-    player = {hand:[], bet:25, credit:1000, numberofCards: 2}
+    player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 2}
     dealer.hand.push(deck.pop())
     dealer.hand.push(deck.pop())
     player.hand.push(deck.pop())
@@ -467,7 +469,7 @@ startBtn.addEventListener('click', ()=> {
         dealer.isFaceDown = false;
         removeAllPreviousCards(dealerSide)
         dealerCard(dealer.hand)
-        player.credit = player.credit + player.bet
+        player.credit = player.credit + parseInt(betInput.value)
         hitBtn.disabled = true;
         stayBtn.disabled = true;
         dealingBtn.disabled = false;
@@ -490,7 +492,7 @@ hitBtn.addEventListener('click', () => {
         dealer.isFaceDown = false;
         removeAllPreviousCards(dealerSide)
         dealerCard(dealer.hand)
-        player.credit = player.credit - player.bet
+        player.credit = player.credit - parseInt(betInput.value)
         hitBtn.disabled = true;
         stayBtn.disabled = true;
         dealingBtn.disabled = false;
@@ -514,17 +516,17 @@ stayBtn.addEventListener('click', () => {
 
     if (sumDealerHand() > 21) {
         alert('dealer bust')
-        player.credit = player.credit + player.bet
+        player.credit = player.credit + parseInt(betInput.value)
     }else if (sumDealerHand() === sumPlayerHand()) {
         alert('draw')
         
     } else if (sumPlayerHand() > sumDealerHand()) {
         alert('Table win')
-        player.credit = player.credit + player.bet
+        player.credit = player.credit + parseInt(betInput.value)
         
     } else {
         alert('Dealer win')
-        player.credit = player.credit - player.bet
+        player.credit = player.credit - parseInt(betInput.value)
     }
     hitBtn.disabled = true;
     stayBtn.disabled = true;
@@ -556,13 +558,13 @@ dealingBtn.addEventListener('click', () => {
     
     if (sumPlayerHand() === 21) {
         alert('Blackjack')
-        player.credit = player.credit + player.bet
+        player.credit = player.credit + parseInt(betInput.value)
         hitBtn.disabled = true;
         stayBtn.disabled = true;
         dealingBtn.disabled = false;
     }
 
-    displayBetAndCredit()
+    //displayBetAndCredit()
 
 })
 
