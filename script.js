@@ -301,6 +301,7 @@ const cardsArr = [
 const table = document.querySelector('.table')
 const playerSide = document.querySelector('.player')
 const dealerSide = document.querySelector('.dealer')
+const playerSplitCard = document.querySelector('.playerSplit')
 
 //bet and credit
 const bets = document.querySelector('#currentBet')
@@ -327,7 +328,7 @@ let creditInput = document.querySelector('#creditInput')
 let betInput = document.querySelector('#betInput')
 //dealer and player's hand
 let dealer = {hand:[], isFaceDown: true}
-let player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 0}
+let player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 0, splittedHand:[]}
 //let isStarted = false;
 
 //deck is what we use in one game
@@ -382,6 +383,21 @@ function playerCard(arr) {
         // images.style.verticalAlign = 'bottom'
         images.style.border = 0;
         playerSide.appendChild(images)
+    } 
+}
+
+function playerSplittedCard(arr) {
+    //playerSide.removeChild()
+    for (let i = 0; i < arr.length; i++) {
+        let images = document.createElement('img')
+        images.setAttribute('src', arr[i].img)
+        images.setAttribute('data-id', i)
+        images.style.width = `20%`
+        images.style.height = `auto`
+        // images.setAttribute('class', "img-fluid")
+        // images.style.verticalAlign = 'bottom'
+        images.style.border = 0;
+        playerSplitCard.appendChild(images)
     } 
 }
 
@@ -460,7 +476,7 @@ startBtn.addEventListener('click', ()=> {
     emptyHands()
     shuffle()
     dealer = {hand:[], isFaceDown: true}
-    player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 2}
+    player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 2, splittedHand:[]}
     dealer.hand.push(deck.pop())
     dealer.hand.push(deck.pop())
     player.hand.push(deck.pop())
@@ -626,5 +642,11 @@ doubleBtn.addEventListener('click', () => {
 //split is harder that I thought :D
 splitBtn.addEventListener('click', () => {
     removeAllPreviousCards(playerSide)
+    player.splittedHand.push(player.hand.pop())
+    player.hand.push(deck.pop())
+    player.splittedHand.push(deck.pop())
 
+    playerCard(player.hand)
+    playerSplittedCard(player.splittedHand)
+    
 })

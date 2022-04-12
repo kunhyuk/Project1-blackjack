@@ -13,7 +13,10 @@
     margin: 10px;
 }
 
-
+.playerSplit {
+    align-self: flex-end;
+    margin: 10px;
+}
 /* Question
 what should I work on next
 CSS or more features (double, splitt, multiplayer, bigger deck)
