@@ -304,7 +304,7 @@ const dealerSide = document.querySelector('.dealer')
 const playerSplitCard = document.querySelector('.playerSplit')
 
 //bet and credit
-const bets = document.querySelector('#currentBet')
+//const bets = document.querySelector('#currentBet')
 const credits = document.querySelector('#currentCredit')
 
 //Start button is needed to be click to start game
@@ -322,13 +322,17 @@ hitBtn.disabled = true;
 stayBtn.disabled = true;
 dealingBtn.disabled = true;
 doubleBtn.disabled = true;
-splitBtn.disabled = true;
+// splitBtn.disabled = true;
 //inputs
 let creditInput = document.querySelector('#creditInput')
+let amount = document.getElementById('amount');
+
 let betInput = document.querySelector('#betInput')
+
 //dealer and player's hand
 let dealer = {hand:[], isFaceDown: true}
-let player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 0, splittedHand:[]}
+let currentBet = 25;
+let player = {hand:[], bet:currentBet, credit:1000, numberofCards: 0, splittedHand:[]}
 //let isStarted = false;
 
 //deck is what we use in one game
@@ -364,12 +368,6 @@ for (let i = 0; i < arr.length; i++) {
     dealerSide.appendChild(images)
 } 
 }
-    // let images = document.createElement('img')
-    // images.setAttribute('src', arr[i].img)
-    // images.setAttribute('data-id', i)
-    // images.style.width = `200px`
-    // images.style.height = `200px`
-    // dealerSide.appendChild(images)
 }
 function playerCard(arr) {
     //playerSide.removeChild()
@@ -379,23 +377,19 @@ function playerCard(arr) {
         images.setAttribute('data-id', i)
         images.style.width = `20%`
         images.style.height = `auto`
-        // images.setAttribute('class', "img-fluid")
-        // images.style.verticalAlign = 'bottom'
         images.style.border = 0;
         playerSide.appendChild(images)
     } 
 }
 
 function playerSplittedCard(arr) {
-    //playerSide.removeChild()
     for (let i = 0; i < arr.length; i++) {
         let images = document.createElement('img')
         images.setAttribute('src', arr[i].img)
         images.setAttribute('data-id', i)
         images.style.width = `20%`
         images.style.height = `auto`
-        // images.setAttribute('class', "img-fluid")
-        // images.style.verticalAlign = 'bottom'
+
         images.style.border = 0;
         playerSplitCard.appendChild(images)
     } 
@@ -453,19 +447,13 @@ function untilOverSixteen() {
    while (sumDealerHand() < 17) {
     dealer.hand.push(deck.pop())
    }
-//    if (sumDealerHand() > 21) {
-//        alert('dealerbust')
-//    }
+
 }
 
-// A function that makes user to type bet before start the game
-// function betFirst() {
-//    alert('bet first')
-// }
 
 function displayBetAndCredit() {
     document.getElementById("currentCredit").innerHTML = `Current Credit: ${player.credit}`
-    //document.getElementById("currentBet").innerHTML = `Current Bet: ${player.bet}`
+    //document.getElementById("amount").innerHTML = `Current Bet: ${player.bet}`
 }
 
 //Buttons
@@ -476,7 +464,33 @@ startBtn.addEventListener('click', ()=> {
     emptyHands()
     shuffle()
     dealer = {hand:[], isFaceDown: true}
-    player = {hand:[], bet:parseInt(betInput.value), credit:1000, numberofCards: 2, splittedHand:[]}
+    let checkInput = betInput.value.trim()
+    if (checkInput) {
+        currentBet = parseInt(betInput.value)
+        player = {hand:[], bet:currentBet, credit:1000, numberofCards: 2, splittedHand:[]}
+    } else {
+        currentBet = 25;
+        
+        player = {hand:[], bet:currentBet, credit:1000, numberofCards: 2, splittedHand:[]}
+    }
+    // if (typeof betInput.value == `undefined`) {
+    //     currentBet = 25;
+        
+    //     player = {hand:[], bet:currentBet, credit:1000, numberofCards: 2, splittedHand:[]}
+    // } else {
+    //     currentBet = parseInt(betInput.value)
+    //     player = {hand:[], bet:currentBet, credit:1000, numberofCards: 2, splittedHand:[]}
+    // }
+    // if (typeof betInput !== String) {
+    //     currentBet = 25;
+    //     player = {hand:[], bet:currentBet, credit:1000, numberofCards: 2, splittedHand:[]}
+        
+    // } else {
+    //     currentBet = parseInt(betInput.value)
+    //     player = {hand:[], bet:currentBet, credit:1000, numberofCards: 2, splittedHand:[]}
+
+    // }
+    
     dealer.hand.push(deck.pop())
     dealer.hand.push(deck.pop())
     player.hand.push(deck.pop())
@@ -488,23 +502,25 @@ startBtn.addEventListener('click', ()=> {
     hitBtn.disabled = false;
     stayBtn.disabled = false;
     doubleBtn.disabled = false;
-    //dealingBtn.disabled = false;
-    if (player.hand[0].value === player.hand[1].value) {
-        splitBtn.disabled = false;
-    }
+    
+    // if (player.hand[0].value === player.hand[1].value) {
+    //     splitBtn.disabled = false;
+    // }
     if (sumPlayerHand() === 21) {
         alert('Blackjack')
         dealer.isFaceDown = false;
         removeAllPreviousCards(dealerSide)
         dealerCard(dealer.hand)
-        player.credit = player.credit + parseInt(betInput.value)
+        
+        player.credit = player.credit + currentBet
+        // + parseInt(betInput.value)
         hitBtn.disabled = true;
         stayBtn.disabled = true;
         dealingBtn.disabled = false;
-        splitBtn.disabled = true;
+        //splitBtn.disabled = true;
         doubleBtn.disabled = true;
     }
-    
+    amount.innerHTML = currentBet
     displayBetAndCredit()
 })
 
@@ -522,7 +538,7 @@ hitBtn.addEventListener('click', () => {
         dealer.isFaceDown = false;
         removeAllPreviousCards(dealerSide)
         dealerCard(dealer.hand)
-        player.credit = player.credit - parseInt(betInput.value)
+        player.credit = player.credit - currentBet
         hitBtn.disabled = true;
         stayBtn.disabled = true;
         doubleBtn.disabled = true;
@@ -548,23 +564,23 @@ stayBtn.addEventListener('click', () => {
 
     if (sumDealerHand() > 21) {
         alert('dealer bust')
-        player.credit = player.credit + parseInt(betInput.value)
+        player.credit = player.credit + currentBet
     }else if (sumDealerHand() === sumPlayerHand()) {
         alert('draw')
         
     } else if (sumPlayerHand() > sumDealerHand()) {
         alert('Table win')
-        player.credit = player.credit + parseInt(betInput.value)
+        player.credit = player.credit + currentBet
         
     } else {
         alert('Dealer win')
-        player.credit = player.credit - parseInt(betInput.value)
+        player.credit = player.credit - currentBet
     }
     hitBtn.disabled = true;
     stayBtn.disabled = true;
     dealingBtn.disabled = false;
     doubleBtn.disabled = true;
-    splitBtn.disabled = true;
+    //splitBtn.disabled = true;
 
     displayBetAndCredit()
 })
@@ -574,9 +590,7 @@ dealingBtn.addEventListener('click', () => {
     removeAllPreviousCards(dealerSide)
     removeAllPreviousCards(playerSide)
     emptyHands()
-    // shuffle()
-    // dealer = {hand:[], isFaceDown: true}
-    // player = {hand:[], bet:25, credit:1000, numberofCards: 2}
+
     dealer.hand.push(deck.pop())
     dealer.hand.push(deck.pop())
     player.hand.push(deck.pop())
@@ -590,16 +604,16 @@ dealingBtn.addEventListener('click', () => {
     stayBtn.disabled = false;
     doubleBtn.disabled = false;
     dealingBtn.disabled = true;
-    
+    currentBet = parseInt(betInput.value)
     if (sumPlayerHand() === 21) {
         alert('Blackjack')
-        player.credit = player.credit + parseInt(betInput.value)
+        player.credit = player.credit + currentBet
         hitBtn.disabled = true;
         stayBtn.disabled = true;
         dealingBtn.disabled = false;
     }
-
-    //displayBetAndCredit()
+    amount.innerHTML = currentBet
+    displayBetAndCredit()
 
 })
 
@@ -619,34 +633,34 @@ doubleBtn.addEventListener('click', () => {
 
     if (sumPlayerHand() > 21) {
         alert('bust')
-        player.credit = player.credit - (2 * parseInt(betInput.value))
+        player.credit = player.credit - (2 * currentBet)
     } else if (sumDealerHand() > 21) {
         alert('dealer bust')
-        player.credit = player.credit + (2 * parseInt(betInput.value))
+        player.credit = player.credit + (2 * currentBet)
     } else if (sumPlayerHand() > sumDealerHand()) {
         alert('table win')
-        player.credit = player.credit + (2 * parseInt(betInput.value))
+        player.credit = player.credit + (2 * currentBet)
     } else if (sumDealerHand() > sumPlayerHand()) {
         alert('dealer win')
-        player.credit = player.credit - (2 * parseInt(betInput.value))
+        player.credit = player.credit - (2 * currentBet)
     }
     hitBtn.disabled = true;
     stayBtn.disabled = true;
     dealingBtn.disabled = false;
     doubleBtn.disabled = true;
-    splitBtn.disabled = true;
+    //splitBtn.disabled = true;
     displayBetAndCredit()
 
 })
 
 //split is harder that I thought :D
-splitBtn.addEventListener('click', () => {
-    removeAllPreviousCards(playerSide)
-    player.splittedHand.push(player.hand.pop())
-    player.hand.push(deck.pop())
-    player.splittedHand.push(deck.pop())
+// splitBtn.addEventListener('click', () => {
+//     removeAllPreviousCards(playerSide)
+//     player.splittedHand.push(player.hand.pop())
+//     player.hand.push(deck.pop())
+//     player.splittedHand.push(deck.pop())
 
-    playerCard(player.hand)
-    playerSplittedCard(player.splittedHand)
+//     playerCard(player.hand)
+//     playerSplittedCard(player.splittedHand)
     
-})
+// })
